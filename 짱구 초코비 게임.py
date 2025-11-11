@@ -1,13 +1,14 @@
 import pygame
 import random
 
+
 # 초기화
 pygame.init()
 WIDTH, HEIGHT = 500, 500
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("초코비 먹고 싶은 짱구")
 clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 40)
+font = pygame.font.SysFont("malgungothic", 40)   # 윈도우
 
 # 이미지 불러오기
 bg_img = pygame.image.load("images\배경.png").convert()
@@ -20,13 +21,13 @@ pygame.mouse.set_visible(False)
 
 # 쓰레기 위치 생성
 trash_list = []
-for _ in range(10):
+for _ in range(20):
     x = random.randint(0, WIDTH - 50)
     y = random.randint(0, HEIGHT - 50)
     trash_list.append(pygame.Rect(x, y, 50, 50))
 
 # 제한 시간 설정 (초)
-time_limit = 10
+time_limit = 20
 start_ticks = pygame.time.get_ticks()
 
 score = 0
@@ -36,12 +37,12 @@ while running:
 
     # 남은 시간 계산
     seconds = time_limit - (pygame.time.get_ticks() - start_ticks) // 1000
-if score >= 10:
-    end_reason = "clear"
-    running = False
-elif seconds <= 0:
-    end_reason = "timeout"
-    running = False
+    if score >= 20:
+        end_reason = "clear"
+        running = False
+    elif seconds <= 0:
+        end_reason = "timeout"
+        running = False
 
 
     # 쓰레기 그리기
@@ -51,8 +52,8 @@ elif seconds <= 0:
     # 점수 및 시간 표시
     score_text = font.render(f"Score: {score}", True, (0, 0, 0))
     time_text = font.render(f"Time: {seconds}", True, (255, 0, 0))
-    screen.blit(score_text, (10, 10))
-    screen.blit(time_text, (10, 50))
+    screen.blit(score_text, (10, HEIGHT - 90))
+    screen.blit(time_text, (10, HEIGHT - 50))
 
     # 짱구 이미지 마우스 위치에 그리기
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -75,10 +76,13 @@ elif seconds <= 0:
 # 게임 종료 화면
 screen.fill((255, 255, 255))
 if end_reason == "clear":
-    end_text = font.render(f"초코비 획득! 축하합니다 🎉: {score}", True, (0, 150, 0))
+    end_text = font.render(f"초코비 획득! : 점수 :{score}", True, (0, 150, 0))
 else:
-    end_text = font.render(f"시간초과! 점수: {score}", True, (150, 0, 0))
-screen.blit(end_text, (100, HEIGHT // 2 - 20))
+    end_text = font.render(f"시간 초과! score: {score}", True, (150, 0, 0))
+
+
+text_rect = end_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+screen.blit(end_text, text_rect)
 pygame.display.update()
 pygame.time.wait(3000)
 
